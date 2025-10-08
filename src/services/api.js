@@ -16,30 +16,38 @@ const API_BASE_URL = 'https://dinesh-s-portfolio-backend.onrender.com';
  * @property {string} status
  */
 
-// src/services/api.js
+/**
+ * Submit contact form data to backend
+ * @param {ContactFormData} formData
+ * @returns {Promise<ContactResponse>}
+ */
+export async function submitContactForm({ name, email, message }) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/contact/submit/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, message }),
+    });
 
-export const contactApi = {
-  submitContactForm: async ({ name, email, message }) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/contact/submit/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, message }),
-      });
-
-      if (!response.ok) {
+    if (!response.ok) {
+      // Try parsing backend JSON error
+      let errorMsg = `Server responded with status ${response.status}`;
+      try {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to send message");
+        errorMsg = errorData?.error || JSON.stringify(errorData);
+      } catch (_) {
+        const text = await response.text();
+        if (text) errorMsg = text;
       }
-
-      const data = await response.json();
-      return data;
-
-    } catch (error) {
-      console.error("Contact API error:", error);
-      throw error;
+      throw new Error(errorMsg);
     }
-  },
-};
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Contact API error:", error);
+    throw error;
+  }
+}
