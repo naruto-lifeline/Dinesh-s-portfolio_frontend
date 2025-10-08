@@ -8,9 +8,24 @@ import { useToast } from "@/hooks/use-toast";
 import { Mail, Phone, MapPin, Send, Github, Linkedin } from "lucide-react";
 import { contactApi } from "@/services/api";
 
+interface ContactFormData {
+  name: string;
+  email: string;
+  message: string;
+}
+
+interface ContactResponse {
+  message: string;
+  status?: "success" | "warning" | "error";
+}
+
 export const ContactSection = () => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [formData, setFormData] = useState<ContactFormData>({
+    name: "",
+    email: "",
+    message: "",
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -20,10 +35,21 @@ export const ContactSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Basic client-side validation
+    if (!formData.name || !formData.email || !formData.message) {
+      toast({
+        title: "Error",
+        description: "All fields are required!",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const result = await contactApi.submitContactForm(formData);
+      const result: ContactResponse = await contactApi.submitContactForm(formData);
 
       toast({
         title: "Message Sent Successfully!",
@@ -31,7 +57,6 @@ export const ContactSection = () => {
       });
 
       setFormData({ name: "", email: "", message: "" });
-
     } catch (error) {
       toast({
         title: "Error",
@@ -46,7 +71,7 @@ export const ContactSection = () => {
   const contactInfo = [
     { icon: <Mail className="h-5 w-5" />, label: "Email", value: "dineshkunchi2002@gmail.com", href: "mailto:dineshkunchi2002@gmail.com" },
     { icon: <Phone className="h-5 w-5" />, label: "Phone", value: "+91 7032684006", href: "tel:+917032684006" },
-    { icon: <MapPin className="h-5 w-5" />, label: "Location", value: "Hyderaabad", href: "#" },
+    { icon: <MapPin className="h-5 w-5" />, label: "Location", value: "Hyderabad", href: "#" },
   ];
 
   const socialLinks = [
@@ -118,7 +143,12 @@ export const ContactSection = () => {
                     />
                   </div>
 
-                  <Button type="submit" className="w-full btn-hero" disabled={isSubmitting}>
+                  <Button
+                    type="submit"
+                    className="w-full btn-hero"
+                    disabled={isSubmitting}
+                    aria-busy={isSubmitting}
+                  >
                     {isSubmitting ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
