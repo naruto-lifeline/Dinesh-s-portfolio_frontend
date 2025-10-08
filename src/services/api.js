@@ -19,27 +19,27 @@ const API_BASE_URL = 'https://dinesh-s-portfolio-backend.onrender.com';
 // src/services/api.js
 
 export const contactApi = {
-  async submitContactForm(formData) {
-    const response = await fetch(`${API_BASE_URL}/contact/submit/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+  submitContactForm: async ({ name, email, message }) => {
+    try {
+      const response = await fetch(`${BASE_URL}/contact/submit/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, message }),
+      });
 
-    // Throw error if response not OK
-    if (!response.ok) {
-      let errorMessage = "Failed to send message";
-      try {
+      if (!response.ok) {
         const errorData = await response.json();
-        errorMessage = errorData.error || errorMessage;
-      } catch {
-        // ignore JSON parsing error
+        throw new Error(errorData.error || "Failed to send message");
       }
-      throw new Error(errorMessage);
-    }
 
-    return await response.json();
+      const data = await response.json();
+      return data;
+
+    } catch (error) {
+      console.error("Contact API error:", error);
+      throw error;
+    }
   },
 };
