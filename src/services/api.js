@@ -21,27 +21,25 @@ const API_BASE_URL = 'https://dinesh-s-portfolio-backend.onrender.com';
 export const contactApi = {
   async submitContactForm(formData) {
     const response = await fetch(`${API_BASE_URL}/contact/submit/`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     });
 
-    // Try parsing JSON safely
-    let data;
-    try {
-      data = await response.json();
-    } catch (err) {
-      // If response is not JSON (likely HTML), throw a clearer error
-      const text = await response.text();
-      throw new Error(`Server returned invalid JSON:\n${text}`);
-    }
-
+    // Throw error if response not OK
     if (!response.ok) {
-      throw new Error(data.error || `Failed to send message: ${response.status}`);
+      let errorMessage = "Failed to send message";
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.error || errorMessage;
+      } catch {
+        // ignore JSON parsing error
+      }
+      throw new Error(errorMessage);
     }
 
-    return data;
+    return await response.json();
   },
 };
