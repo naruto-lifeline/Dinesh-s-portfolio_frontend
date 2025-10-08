@@ -6,15 +6,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Phone, MapPin, Send, Github, Linkedin } from "lucide-react";
-import { contactApi } from "@/services/api"; // Import your API service
+import { contactApi } from "@/services/api";
 
 export const ContactSection = () => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -27,15 +23,15 @@ export const ContactSection = () => {
     setIsSubmitting(true);
 
     try {
-      // Use the actual backend API
       const result = await contactApi.submitContactForm(formData);
-      
+
       toast({
         title: "Message Sent Successfully!",
         description: result.message || "Thank you for your message. I'll get back to you soon!",
       });
-      setFormData({ name: '', email: '', message: '' });
-      
+
+      setFormData({ name: "", email: "", message: "" });
+
     } catch (error) {
       toast({
         title: "Error",
@@ -48,39 +44,14 @@ export const ContactSection = () => {
   };
 
   const contactInfo = [
-    {
-      icon: <Mail className="h-5 w-5" />,
-      label: "Email",
-      value: "dineshkunchi2002@gmail.com",
-      href: "mailto:dineshkunchi2002@gmail.com"
-    },
-    {
-      icon: <Phone className="h-5 w-5" />,
-      label: "Phone",
-      value: "+91 7032684006",
-      href: "tel:+917032684006"
-    },
-    {
-      icon: <MapPin className="h-5 w-5" />,
-      label: "Location",
-      value: "Hyderaabad",
-      href: "#"
-    }
+    { icon: <Mail className="h-5 w-5" />, label: "Email", value: "dineshkunchi2002@gmail.com", href: "mailto:dineshkunchi2002@gmail.com" },
+    { icon: <Phone className="h-5 w-5" />, label: "Phone", value: "+91 7032684006", href: "tel:+917032684006" },
+    { icon: <MapPin className="h-5 w-5" />, label: "Location", value: "Hyderaabad", href: "#" },
   ];
 
   const socialLinks = [
-    {
-      icon: <Github className="h-5 w-5" />,
-      label: "GitHub",
-      href: "https://github.com/Dineshkunchi",
-      username: "@Dineshkunchi"
-    },
-    {
-      icon: <Linkedin className="h-5 w-5" />,
-      label: "LinkedIn",
-      href: "https://www.linkedin.com/in/dineshkunchi/",
-      username: "dineshkunchi"
-    }
+    { icon: <Github className="h-5 w-5" />, label: "GitHub", href: "https://github.com/Dineshkunchi", username: "@Dineshkunchi" },
+    { icon: <Linkedin className="h-5 w-5" />, label: "LinkedIn", href: "https://www.linkedin.com/in/dineshkunchi/", username: "dineshkunchi" },
   ];
 
   return (
@@ -104,7 +75,6 @@ export const ContactSection = () => {
                   Send a Message
                 </CardTitle>
               </CardHeader>
-              
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
@@ -148,11 +118,7 @@ export const ContactSection = () => {
                     />
                   </div>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full btn-hero"
-                    disabled={isSubmitting}
-                  >
+                  <Button type="submit" className="w-full btn-hero" disabled={isSubmitting}>
                     {isSubmitting ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
@@ -169,27 +135,21 @@ export const ContactSection = () => {
               </CardContent>
             </Card>
 
-            {/* Contact Information */}
+            {/* Contact Info & Social Links */}
             <div className="space-y-8">
               {/* Contact Details */}
               <Card className="card-professional">
                 <CardHeader>
                   <CardTitle>Contact Information</CardTitle>
                 </CardHeader>
-                
                 <CardContent className="space-y-6">
                   {contactInfo.map((item, index) => (
                     <div key={index} className="flex items-center">
-                      <div className="text-primary mr-4">
-                        {item.icon}
-                      </div>
+                      <div className="text-primary mr-4">{item.icon}</div>
                       <div>
                         <p className="font-medium">{item.label}</p>
                         {item.href !== "#" ? (
-                          <a 
-                            href={item.href}
-                            className="text-muted-foreground hover:text-primary transition-colors"
-                          >
+                          <a href={item.href} className="text-muted-foreground hover:text-primary transition-colors">
                             {item.value}
                           </a>
                         ) : (
@@ -206,7 +166,6 @@ export const ContactSection = () => {
                 <CardHeader>
                   <CardTitle>Professional Profiles</CardTitle>
                 </CardHeader>
-                
                 <CardContent className="space-y-4">
                   {socialLinks.map((social, index) => (
                     <a
@@ -216,16 +175,10 @@ export const ContactSection = () => {
                       rel="noopener noreferrer"
                       className="flex items-center p-4 rounded-lg border border-border hover:border-primary transition-colors group"
                     >
-                      <div className="text-primary group-hover:scale-110 transition-transform mr-4">
-                        {social.icon}
-                      </div>
+                      <div className="text-primary group-hover:scale-110 transition-transform mr-4">{social.icon}</div>
                       <div>
-                        <p className="font-medium group-hover:text-primary transition-colors">
-                          {social.label}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {social.username}
-                        </p>
+                        <p className="font-medium group-hover:text-primary transition-colors">{social.label}</p>
+                        <p className="text-sm text-muted-foreground">{social.username}</p>
                       </div>
                     </a>
                   ))}
