@@ -28,11 +28,20 @@ export const contactApi = {
       body: JSON.stringify(formData),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `Failed to send message: ${response.status}`);
+    // Try parsing JSON safely
+    let data;
+    try {
+      data = await response.json();
+    } catch (err) {
+      // If response is not JSON (likely HTML), throw a clearer error
+      const text = await response.text();
+      throw new Error(`Server returned invalid JSON:\n${text}`);
     }
 
-    return await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || `Failed to send message: ${response.status}`);
+    }
+
+    return data;
   },
 };
