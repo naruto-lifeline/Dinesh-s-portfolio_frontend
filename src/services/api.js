@@ -21,7 +21,7 @@ const API_BASE_URL = 'https://dinesh-s-portfolio-backend.onrender.com';
 export const contactApi = {
   submitContactForm: async ({ name, email, message }) => {
     try {
-      const response = await fetch(`${BASE_URL}/contact/submit/`, {
+      const response = await fetch(`${API_BASE_URL}/contact/submit/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
